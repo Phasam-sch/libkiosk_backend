@@ -48,10 +48,6 @@ public class UserController {
             @RequestParam("uid") Long uid,
             @RequestParam("pics") List<MultipartFile> pics
     ) throws Exception{
-        //user 존재 유무 체크
-        userService.
-
-        //사진 저장
 
     }
 }
