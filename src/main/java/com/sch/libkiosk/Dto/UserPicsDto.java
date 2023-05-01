@@ -16,8 +16,6 @@ public class UserPicsDto {
     private String picName;
     private User user;
 
-    private List<MultipartFile> fileList;
-
     public UserPics toEntity(){
         return UserPics.builder()
                 .picPath(picUrl)
@@ -27,9 +25,8 @@ public class UserPicsDto {
     }
 
     @Builder
-    public UserPicsDto(User user, String picUrl, List<MultipartFile> fileList){
+    public UserPicsDto(User user, String picUrl){
         this.user = user;
         this.picUrl = picUrl;
-        this.fileList = fileList;
     }
 }

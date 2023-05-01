@@ -8,9 +8,13 @@ import com.sch.libkiosk.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -46,8 +50,17 @@ public class UserController {
     @PostMapping
     public Long signUp(
             @RequestParam("uid") Long uid,
-            @RequestParam("pics") List<MultipartFile> pics
-    ) throws Exception{
+            @RequestParam("pics") List<MultipartFile> pics){
 
+        Long userId;
+        //존재하는 user 임을 확인
+        if (userPicsService.isExist(uid)){
+            userId =  userPicsService.uploadUserPic(uid, pics);
+        }else{//존재하지 않는 경우 에러 발생 및 "-1" return
+            userId = Long.valueOf(-1);
+            log.error("User Not Exist");
+        }
+
+        return userId;
     }
 }
