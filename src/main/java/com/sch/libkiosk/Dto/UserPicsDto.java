@@ -25,8 +25,9 @@ public class UserPicsDto {
     }
 
     @Builder
-    public UserPicsDto(User user, String picUrl){
+    public UserPicsDto(User user, String picUrl, String picName){
         this.user = user;
         this.picUrl = picUrl;
+        this.picName = picName;
     }
 }

@@ -1,7 +1,5 @@
 package com.sch.libkiosk.Service;
 
-import com.sch.libkiosk.Dto.PicUploadDto;
-import com.sch.libkiosk.Dto.SignupDto;
 import com.sch.libkiosk.Dto.UserPicsDto;
 import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Entity.UserPics;
@@ -10,19 +8,15 @@ import com.sch.libkiosk.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +30,9 @@ public class UserPicsService {
     private final UserRepository userRepository;
     private final UserPicsRepository userPicsRepository;
 
+    @Value("${userPics.dir}")
+    private String userPicsDir;
+
     @Transactional
     public Boolean isExist(Long uid){
         try {
@@ -47,40 +44,43 @@ public class UserPicsService {
         return true;
     }
     @Transactional
-    public Boolean uploadUserPic(Long uid, List<MultipartFile> pics) throws FileNotFoundException, IOException {
+    public Integer uploadUserPic(Long uid, List<MultipartFile> pics) throws  IOException {
         //TODO:사진을 서버 특정 디렉토리에 저장 후, 해당 디렉토리 경로를 입력 후 저장 구현.
 
-        //파일이 비었는지 확인
+        Integer success = 0;
+
+        //받은 파일이 비었는지 확인
         if(pics.isEmpty()){
             log.error("Wrong pics");
             throw new IllegalStateException("File is Empty");
-        }else { //파일이 비지 않았을 경우
+        }else { //받은 파일이 비지 않았을 경우
+            //상대경로 쓰지 말 것
+            //프로젝트 내 resources 폴더는 배포시 유실 가능성 등 문제가 많음.
+            //따라서 프로젝트 외부 폴더를 이용할 것.
 
-            String f_path = "../../../resources/UserPics/" + uid.toString();
+            String f_path = userPicsDir + "/" +uid.toString();
 
             //UserPics 아래에 uid 경로 존재여부 확인
-            URL url = getClass().getResource(f_path);
             Boolean isExist = null;
-            Boolean isDir = null;
 
-            //경로가 아닐경우 예외
+            //경로 폴더가 존재하지 않을경우 예외 발생을 위해 try 문으로 감싸기.
             try{
 //                isDir = new File(url.getFile()).isDirectory();
-//                파일이 존재하는지 확인
-                isExist = new File(url.getFile()).exists();
+//                경로에 폴더가 존재하는지 확인
+                isExist = new File(f_path).exists();
                 if(!isExist){
-                    throw new FileNotFoundException();
-
                     //존재하지 않는경우 생성
                     File directory = new File(f_path);
+
                     //파일 생성 실패시
-                    if(!directory.exists()) {
+                    if(!directory.mkdirs()) {
                         throw new IOException("Failed to make dir: " + f_path);
                     }
                     //파일 생성 성공시 계속 진행
                 }
 
-                //존재하는 경우
+                //폴더가 존재하는 경우
+                //저장을 위한 받은 파일 체크 시작
                 for (MultipartFile pic : pics){
                     //파일 확장자 체크
                     String contentType = pic.getContentType();
@@ -103,14 +103,14 @@ public class UserPicsService {
 
                     //파일명 중복 피하기 위해 나노초를 파일명으로 사용
                     long nanoTime = System.nanoTime();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
-                    String picName = format.format(new Date(nanoTime / 1000000));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
+                    String picName = sdf.format(new Date(nanoTime / 1000000));
 
-                    String finalPath = "..\\..\\..\\resources\\UserPics\\" + picName + originalFileExtension;
+                    String finalPath = f_path + "/" + picName + originalFileExtension;
                     //파일 명 지정 후 경로에 저장
                     try{
                         pic.transferTo(new File(finalPath));
-
+                        log.info("path: "+finalPath + " || fileName: " + picName);
                     }catch(IOException e){
                         throw new IOException("Failed to save local storage");
                     }
@@ -121,23 +121,26 @@ public class UserPicsService {
                     UserPicsDto userpicsDto = UserPicsDto.builder()
                             .user(user.get())
                             .picUrl(finalPath)
+                            .picName(picName)
                             .build();
 
-                    //결과 반환
                     userPicsRepository.save(userpicsDto.toEntity());
-                    return true;
+                    success += 1;
+
                 }
 
             }catch (FileNotFoundException e) {
-                log.error("Failed to check if directory exists: " + url.getFile());
+                log.error("Failed to check if directory exists: " + f_path);
             }
         }
-        return false;
+        return success;
     }
 
+    //사진 여러개 첨부하게 되면서, 기존 한개만 반환하던 것을 수정해야 함.
+    /*
     @Transactional
     public UserPicsDto getUserPics(Long userId){
-        UserPics up = userPicsRepository.findByUserId(userId);
+        List<UserPics> up = userPicsRepository.findByUserId(userId);
         UserPicsDto userPicsDto = UserPicsDto.builder()
                 .user(up.getUser())
                 .picUrl(up.getPicPath())
@@ -145,4 +148,5 @@ public class UserPicsService {
 
         return userPicsDto;
     }
+    */
 }

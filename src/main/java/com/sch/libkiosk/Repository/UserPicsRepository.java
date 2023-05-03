@@ -3,6 +3,8 @@ package com.sch.libkiosk.Repository;
 import com.sch.libkiosk.Entity.UserPics;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserPicsRepository extends JpaRepository<UserPics, Long> {
-    UserPics findByUserId(Long userId);
+    List<UserPics> findByUserId(Long userId);
 }
