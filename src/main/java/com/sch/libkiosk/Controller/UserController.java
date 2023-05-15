@@ -26,8 +26,8 @@ public class UserController {
     private final UserPicsService userPicsService;
 
     @PostMapping
-    public ResponseEntity<?> signUp(@RequestBody SignupDto signupDto){
-
+    public Long signUp(@RequestBody SignupDto signupDto){
+        Long ret = -1L;
         UserDto userDto = UserDto.builder()
                 .userName(signupDto.getUserName())
                 .userBirth(signupDto.getUserBirth())
@@ -38,12 +38,14 @@ public class UserController {
                 .build();
 
         try{
-            userService.SignUp(userDto);
-            return ResponseEntity.ok().build();
+             ret = userService.SignUp(userDto);
+
         }catch(Exception e){
             log.error("Sign up Error ======\n" + signupDto + "\n\n");
-            return ResponseEntity.badRequest().build();
+            ret = -1L;
         }
+
+        return ret;
     }
 
     @PostMapping("/pics")

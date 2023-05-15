@@ -22,8 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void SignUp(UserDto userDto){
-        userRepository.save(userDto.toEntity());
+    public Long SignUp(UserDto userDto){
+        return userRepository.save(userDto.toEntity()).getId();
     }
 
     @Transactional
