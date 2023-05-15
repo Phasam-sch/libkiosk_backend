@@ -39,6 +39,15 @@ public class User {
     private Long rfidNum;
 
 
+    public void updateUser(String userPhoneNum, String password, Boolean frAgree){
+        this.userPhoneNum = userPhoneNum;
+        this.password = password;
+        this.frAgree = frAgree;
+    }
+
+    public void updateUserCard(Long rfidNum){
+        this.rfidNum = rfidNum;
+    }
 
     @Builder
     public User(String userName, String userBirth, String userPhoneNum, String password, Sex sex, Boolean frAgree, Long rfidNum){

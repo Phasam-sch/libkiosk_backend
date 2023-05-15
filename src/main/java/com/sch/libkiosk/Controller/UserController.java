@@ -4,6 +4,7 @@ import com.sch.libkiosk.Dto.SignupDto;
 import com.sch.libkiosk.Dto.UserDto;
 import com.sch.libkiosk.Service.UserPicsService;
 import com.sch.libkiosk.Service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final UserPicsService userPicsService;
 
     @PostMapping
-    public Long signUp(@RequestBody SignupDto signupDto){
+    public ResponseEntity<?> signUp(@RequestBody SignupDto signupDto){
 
         UserDto userDto = UserDto.builder()
                 .userName(signupDto.getUserName())
@@ -36,29 +37,33 @@ public class UserController {
                 .frAgree(signupDto.getFrAgree())
                 .build();
 
-        return userService.SignUp(userDto);
+        try{
+            userService.SignUp(userDto);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            log.error("Sign up Error ======\n" + signupDto + "\n\n");
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/pics")
-    public Integer postUserPics(
+    public ResponseEntity<?> postUserPics(
             @RequestParam("uid") Long uid,
             @RequestParam("pics") List<MultipartFile> pics) {
-
-        Integer uploadedPicNum = 0;
         Long userId;
         //존재하는 user 임을 확인
         if (userPicsService.isExist(uid)){
               try{
-                  uploadedPicNum = userPicsService.uploadUserPic(uid, pics);
+                  userPicsService.uploadUserPic(uid, pics);
               }catch(IOException e){
                     log.error(e.getMessage());
               }
-        }else{//존재하지 않는 경우 에러 발생 및 "-1" return
-            userId = Long.valueOf(-1);
+        }else{
             log.error("User Not Exist");
+            return ResponseEntity.badRequest().build();
         }
 
-        return uploadedPicNum;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/getAll")
@@ -67,5 +72,33 @@ public class UserController {
         return ResponseEntity.ok(userDtoList);
     }
 
+    //PUT은 요청된 객체로 통쨰로 수정(교체)
+    //PATCH는 일부 데이터만 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+        try {
+            userService.updateUser(userDto, id);
+        }catch(EntityNotFoundException e){
+            log.error("User not Exist");
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+    
+    
+    @PatchMapping("/card/{id}")
+    public ResponseEntity<?> updateUserCard(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+        try{
+            userService.updateUserCard(userDto, id);
+        }catch(EntityNotFoundException e){
+            log.error("User not Exist");
+            return  ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    //로그인
+    //안면인식 관련
+    //사진 업데이트
 
 }

@@ -1,21 +1,15 @@
 package com.sch.libkiosk.Service;
 
-import com.sch.libkiosk.Dto.SignupDto;
 import com.sch.libkiosk.Dto.UserDto;
 import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Repository.UserRepository;
-import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long SignUp(UserDto userDto){
-        //user 정보를 DB에 저장후, ID를 가져옴.
-        return userRepository.save(userDto.toEntity()).getId();
+    public void SignUp(UserDto userDto){
+        userRepository.save(userDto.toEntity());
     }
 
     @Transactional
@@ -55,17 +48,42 @@ public class UserService {
     }
 
     @Transactional
-    public User getUserEntity(Long uid){
+    public User getUserEntity(Long uid) throws EntityNotFoundException{
         Optional<User> optionalUser = userRepository.findById(uid);
         if(optionalUser.isEmpty()){
-            throw new EntityExistsException();
+            throw new EntityNotFoundException();
         }
         return optionalUser.get();
     }
 
-//    @Transactional
-//    public User updateUser
+    @Transactional
+    public void updateUser(UserDto userDto, Long uid) throws EntityNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(uid);
+
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.updateUser(userDto.getUserPhoneNum(), userDto.getPassword(), userDto.getFrAgree());
+            userRepository.save(user);
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateUserCard(UserDto userDto, Long uid) throws EntityNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(uid);
+
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.updateUserCard(userDto.getRfidNum());
+            userRepository.save(user);
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
 
 //    @Transactional
 //    public void DeleteUser()
+
+
 }

@@ -44,10 +44,9 @@ public class UserPicsService {
         return true;
     }
     @Transactional
-    public Integer uploadUserPic(Long uid, List<MultipartFile> pics) throws  IOException {
+    public void uploadUserPic(Long uid, List<MultipartFile> pics) throws  IOException {
         //TODO:사진을 서버 특정 디렉토리에 저장 후, 해당 디렉토리 경로를 입력 후 저장 구현.
 
-        Integer success = 0;
 
         //받은 파일이 비었는지 확인
         if(pics.isEmpty()){
@@ -125,7 +124,6 @@ public class UserPicsService {
                             .build();
 
                     userPicsRepository.save(userpicsDto.toEntity());
-                    success += 1;
 
                 }
 
@@ -133,7 +131,6 @@ public class UserPicsService {
                 log.error("Failed to check if directory exists: " + f_path);
             }
         }
-        return success;
     }
 
     //사진 여러개 첨부하게 되면서, 기존 한개만 반환하던 것을 수정해야 함.
