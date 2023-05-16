@@ -93,6 +93,7 @@ public class UserPicsService {
                     }else{
                         if(contentType.contains("image/jpeg")){
                             originalFileExtension = ".jpg";
+                            //TODO:PNG는 사용하지 않으므로 없애야함
                         } else if(contentType.contains("image/png")){
                             originalFileExtension = ".png";
                         } else {

@@ -18,7 +18,7 @@ public class Book {
     private String title;
 
     @Column(nullable = false)
-    private String author;
+private String author;
 
     @Column(nullable = false)
     private String publisher;

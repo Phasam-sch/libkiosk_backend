@@ -33,6 +33,16 @@ public class CheckOut {
     @Column(nullable = false)
     private Boolean isReturned;
 
+    public void setCheckOutInit(){
+        this.isReturned = false;
+        this.checkedOutDate = LocalDateTime.now();
+        this.returnDate = this.checkedOutDate.plusDays(7);
+    }
+
+    public void setReturn(){
+        this.isReturned = true;
+    }
+
     @Builder
     public CheckOut (User user, Book book, LocalDateTime checkedOutDate, LocalDateTime returnDate, Boolean isReturned){
         this.user = user;
