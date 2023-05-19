@@ -135,17 +135,17 @@ public class UserPicsService {
         }
     }
 
-    //사진 여러개 첨부하게 되면서, 기존 한개만 반환하던 것을 수정해야 함.
-    /*
-    @Transactional
-    public UserPicsDto getUserPics(Long userId){
-        List<UserPics> up = userPicsRepository.findByUserId(userId);
-        UserPicsDto userPicsDto = UserPicsDto.builder()
-                .user(up.getUser())
-                .picUrl(up.getPicPath())
-                .build();
 
-        return userPicsDto;
-    }
-    */
+
+//    @Transactional
+//    public UserPicsDto getUserPics(Long userId){
+//        List<UserPics> up = userPicsRepository.findByUserId(userId);
+//        UserPicsDto userPicsDto = UserPicsDto.builder()
+//                .user(up.getUser())
+//                .picUrl(up.getPicPath())
+//                .build();
+//
+//        return userPicsDto;
+//    }
+
 }

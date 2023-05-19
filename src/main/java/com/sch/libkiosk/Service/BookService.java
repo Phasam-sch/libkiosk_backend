@@ -53,7 +53,7 @@ public class BookService {
 
     //책 목록 불러오기
     @Transactional
-    public List<BookDto> getBookList(){
+    public List<BookDto> getAllBookList(){
         List<Book> bookList = bookRepository.findAll();
         List<BookDto> retList = new ArrayList<>();
 
@@ -75,14 +75,14 @@ public class BookService {
     }
 
 
-    //책 정보 업데이트
+    //TODO:책 정보 업데이트
 
     //대출 생성
     @Transactional
-    public Long postCheckOut(CheckOutDto dto){
+    public void postCheckOut(CheckOutDto dto){
         CheckOut checkout = dto.toEntity();
         checkout.setCheckOutInit();
-        return checkOutRepository.save(checkout).getId();
+        checkOutRepository.save(checkout);
     }
 
 
