@@ -45,7 +45,7 @@ public class UserPicsService {
     }
     @Transactional
     public void uploadUserPic(Long uid, List<MultipartFile> pics) throws  IOException {
-        //TODO:사진을 서버 특정 디렉토리에 저장 후, 해당 디렉토리 경로를 입력 후 저장 구현.
+        //사진을 서버 특정 디렉토리에 저장 후, 해당 디렉토리 경로를 입력 후 저장 구현.
 
 
         //받은 파일이 비었는지 확인
@@ -93,18 +93,19 @@ public class UserPicsService {
                     }else{
                         if(contentType.contains("image/jpeg")){
                             originalFileExtension = ".jpg";
-                            //TODO:PNG는 사용하지 않으므로 없애야함
-                        } else if(contentType.contains("image/png")){
-                            originalFileExtension = ".png";
+                            //PNG는 사용하지 않으므로 없애야함
+//                        } else if(contentType.contains("image/png")){
+//                            originalFileExtension = ".png";
                         } else {
                             break;
                         }
                     }
-
-                    //파일명 중복 피하기 위해 나노초를 파일명으로 사용
-                    long nanoTime = System.nanoTime();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
-                    String picName = sdf.format(new Date(nanoTime / 1000000));
+// 파일명도 id로 동일하게 사용
+//                    //파일명 중복 피하기 위해 나노초를 파일명으로 사용
+//                    long nanoTime = System.nanoTime();
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
+//                    String picName = sdf.format(new Date(nanoTime / 1000000));
+                    String picName = uid.toString();
 
                     String finalPath = f_path + "/" + picName + originalFileExtension;
                     //파일 명 지정 후 경로에 저장

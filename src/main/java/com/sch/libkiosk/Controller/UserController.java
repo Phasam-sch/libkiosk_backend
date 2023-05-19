@@ -2,6 +2,7 @@ package com.sch.libkiosk.Controller;
 
 import com.sch.libkiosk.Dto.SignupDto;
 import com.sch.libkiosk.Dto.UserDto;
+import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Service.UserPicsService;
 import com.sch.libkiosk.Service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -72,6 +73,11 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getUserList(){
         List<UserDto> userDtoList = userService.getAllUser();
         return ResponseEntity.ok(userDtoList);
+    }
+
+    @GetMapping("/get/{id}")
+    public UserDto getUserById(@PathVariable("id") Long id){
+        return userService.getUserById(id);
     }
 
     //PUT은 요청된 객체로 통쨰로 수정(교체)

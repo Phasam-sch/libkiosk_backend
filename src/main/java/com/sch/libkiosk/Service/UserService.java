@@ -48,6 +48,26 @@ public class UserService {
     }
 
     @Transactional
+    public UserDto getUserById(Long uid) throws EntityNotFoundException{
+        Optional<User> optionalUser = userRepository.findById(uid);
+
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            return  UserDto.builder()
+                        .userName(user.getUserName())
+                        .userBirth(user.getUserBirth())
+                        .userPhoneNum(user.getUserPhoneNum())
+                        .password(user.getPassword())
+                        .sex(user.getSex())
+                        .frAgree(user.getFrAgree())
+                        .rfidNum(user.getRfidNum())
+                        .build();
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Transactional
     public User getUserEntity(Long uid) throws EntityNotFoundException{
         Optional<User> optionalUser = userRepository.findById(uid);
         if(optionalUser.isEmpty()){
