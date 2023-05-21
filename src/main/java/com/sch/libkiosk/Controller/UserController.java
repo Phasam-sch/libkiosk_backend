@@ -100,7 +100,7 @@ public class UserController {
             userService.updateUserCard(userDto, id);
         }catch(EntityNotFoundException e){
             log.error("User not Exist");
-            return  ResponseEntity.badRequest().build();
+            return  ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.ok().build();
     }

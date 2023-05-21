@@ -14,11 +14,11 @@ public class BookDto {
 
     private String publisher;
 
-    private Long ISBN;
+    private String ISBN;
 
     private Integer pageNum;
 
-    private Long rfidId;
+    private Long rfidNum;
 
     private Boolean isCheckedOut;
 
@@ -29,19 +29,20 @@ public class BookDto {
                 .publisher(publisher)
                 .ISBN(ISBN)
                 .pageNum(pageNum)
-                .rfidId(rfidId)
+                .rfidNum(rfidNum)
                 .isCheckedOut(isCheckedOut)
                 .build();
     }
 
     @Builder
-    public BookDto(String title, String author, String publisher, Long ISBN, Integer pageNum, Long rfidId, Boolean isCheckedOut){
+    public BookDto(String title, String author, String publisher, String ISBN, Integer pageNum, Long rfidNum
+            , Boolean isCheckedOut){
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.ISBN = ISBN;
         this.pageNum = pageNum;
-        this.rfidId = rfidId;
+        this.rfidNum = rfidNum;
         this.isCheckedOut = isCheckedOut;
     }
 }

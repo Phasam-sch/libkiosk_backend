@@ -9,9 +9,11 @@ import com.sch.libkiosk.Repository.CheckOutRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +45,7 @@ public class BookService {
                 .ISBN(book.getISBN())
                 .isCheckedOut(book.getIsCheckedOut())
                 .pageNum(book.getPageNum())
-                .rfidId(book.getRfidId())
+                .rfidNum(book.getRfidNum())
                 .build();
         }else{
             throw new EntityNotFoundException();
@@ -64,7 +66,7 @@ public class BookService {
                     .publisher(book.getPublisher())
                     .ISBN(book.getISBN())
                     .pageNum(book.getPageNum())
-                    .rfidId(book.getRfidId())
+                    .rfidNum(book.getRfidNum())
                     .isCheckedOut(book.getIsCheckedOut())
                     .build();
 
@@ -79,10 +81,30 @@ public class BookService {
 
     //대출 생성
     @Transactional
-    public void postCheckOut(CheckOutDto dto){
-        CheckOut checkout = dto.toEntity();
-        checkout.setCheckOutInit();
-        checkOutRepository.save(checkout);
+    public void postCheckOut(CheckOutDto dto) throws EntityNotFoundException, IllegalAccessException{
+        Optional<Book> optionalBook = bookRepository.findById(dto.getBook().getId());
+
+        if(optionalBook.isPresent()){
+            Book book = optionalBook.get();
+            //자동으로 대출일, 반납일 설정 후 반환
+            if(!book.getIsCheckedOut()){
+                CheckOutDto saveDto = CheckOutDto.builder()
+                        .book(dto.getBook())
+                        .user(dto.getUser())
+                        .checkedOutDate(LocalDateTime.now())
+                        .returnDate(LocalDateTime.now().plusDays(7))
+                        .isReturned(false)
+                        .build();
+                CheckOut checkout = dto.toEntity();
+                checkout.setCheckOutInit();
+                checkOutRepository.save(checkout);
+                book.checkout();
+            }else{
+                throw new IllegalAccessException("이미 대출된 도서");
+            }
+        }else{
+            throw new EntityNotFoundException("존재하지 않는 도서");
+        }
     }
 
 

@@ -18,32 +18,40 @@ public class Book {
     private String title;
 
     @Column(nullable = false)
-private String author;
+    private String author;
 
     @Column(nullable = false)
     private String publisher;
 
     @Column(nullable = false)
-    private Long ISBN;
+    private String ISBN;
 
     @Column(nullable = false)
     private Integer pageNum;
 
     @Column(nullable = false)
-    private Long rfidId;
+    private Long rfidNum;
 
     @Column(nullable = false)
     private Boolean isCheckedOut;
 
 
+    public void checkout(){
+        this.isCheckedOut = true;
+    }
+
+    public void returnBook() {
+        this.isCheckedOut = false;
+    }
+
     @Builder
-    public Book(String title, String author, String publisher, Long ISBN, Integer pageNum, Long rfidId, Boolean isCheckedOut){
+    public Book(String title, String author, String publisher, String ISBN, Integer pageNum, Long rfidNum, Boolean isCheckedOut){
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.ISBN = ISBN;
         this.pageNum = pageNum;
-        this.rfidId = rfidId;
+        this.rfidNum = rfidNum;
         this.isCheckedOut = isCheckedOut;
     }
 

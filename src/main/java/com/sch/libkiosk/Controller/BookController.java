@@ -54,6 +54,7 @@ public class BookController {
             bookService.postCheckOut(checkOutDto);
         }catch(Exception e){
             log.error("fail to checkout");
+            log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.ok().build();
