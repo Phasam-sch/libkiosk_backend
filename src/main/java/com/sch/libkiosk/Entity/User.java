@@ -24,6 +24,9 @@ public class User {
     private String userPhoneNum;
 
     @Column(nullable = false)
+    private String loginId;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -39,8 +42,9 @@ public class User {
     private Long rfidNum;
 
 
-    public void updateUser(String userPhoneNum, String password, Boolean frAgree){
+    public void updateUser(String userPhoneNum, String loginId, String password, Boolean frAgree){
         this.userPhoneNum = userPhoneNum;
+        this.loginId = loginId;
         this.password = password;
         this.frAgree = frAgree;
     }
@@ -50,10 +54,11 @@ public class User {
     }
 
     @Builder
-    public User(String userName, String userBirth, String userPhoneNum, String password, Sex sex, Boolean frAgree, Long rfidNum){
+    public User(String userName, String userBirth, String userPhoneNum, String loginId, String password, Sex sex, Boolean frAgree, Long rfidNum){
         this.userName = userName;
         this.userBirth = userBirth;
         this.userPhoneNum = userPhoneNum;
+        this.loginId = loginId;
         this.password = password;
         this.sex = sex;
         this.frAgree = frAgree;

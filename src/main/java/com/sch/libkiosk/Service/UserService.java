@@ -34,10 +34,10 @@ public class UserService {
         for(User u : userList){
             UserDto userDto = UserDto.builder()
                     .userName(u.getUserName())
-                    .userBirth(u.getUserBirth())
-                    .userPhoneNum(u.getUserPhoneNum())
-                    .password(u.getPassword())
-                    .sex(u.getSex())
+//                    .userBirth(u.getUserBirth())
+//                    .userPhoneNum(u.getUserPhoneNum())
+//                    .password(u.getPassword())
+//                    .sex(u.getSex())
                     .frAgree(u.getFrAgree())
                     .build();
 
@@ -82,7 +82,7 @@ public class UserService {
 
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
-            user.updateUser(userDto.getUserPhoneNum(), userDto.getPassword(), userDto.getFrAgree());
+            user.updateUser(userDto.getUserPhoneNum(), userDto.getLoginId(),userDto.getPassword(), userDto.getFrAgree());
             userRepository.save(user);
         }else{
             throw new EntityNotFoundException();
