@@ -44,6 +44,10 @@ public class Book {
         this.isCheckedOut = false;
     }
 
+    public void updateBook(Long rfidNum){
+        this.rfidNum = rfidNum;
+    }
+
     @Builder
     public Book(String title, String author, String publisher, String ISBN, Integer pageNum, Long rfidNum, Boolean isCheckedOut){
         this.title = title;

@@ -48,6 +48,17 @@ public class BookController {
         return bookService.getAllBookList();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateBook(@PathVariable("id")Long id, @RequestBody BookDto dto){
+        try{
+            bookService.updateBook(id, dto);
+            return ResponseEntity.ok().build();
+        }catch(EntityNotFoundException e){
+            log.error("존재하지 않는 도서");
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/checkout")
     public ResponseEntity<?> PostCheckOut(@RequestBody CheckOutDto checkOutDto){
         try{

@@ -77,7 +77,18 @@ public class BookService {
     }
 
 
-    //TODO:책 정보 업데이트
+    //TODO:책 정보 업데이트(rfid수정)
+    @Transactional
+    public void updateBook(Long id, BookDto dto) throws EntityNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+
+        if(optionalBook.isPresent()){
+            Book book = optionalBook.get();
+            book.updateBook(dto.getRfidNum());
+        }else{
+            throw new EntityNotFoundException("존재하지 않는 도서");
+        }
+    }
 
     //대출 생성
     @Transactional
