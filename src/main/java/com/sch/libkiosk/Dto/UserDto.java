@@ -14,6 +14,8 @@ public class UserDto {
 
     private String userPhoneNum;
 
+    private String loginId;
+
     private String password;
 
     private Sex sex;
@@ -27,6 +29,7 @@ public class UserDto {
                 .userName(userName)
                 .userBirth(userBirth)
                 .userPhoneNum(userPhoneNum)
+                .loginId(loginId)
                 .password(password)
                 .sex(sex)
                 .frAgree(frAgree)
@@ -35,10 +38,11 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(String userName, String userBirth, String userPhoneNum, String password, Sex sex, Boolean frAgree, Long rfidNum){
+    public UserDto(String userName, String userBirth, String userPhoneNum, String loginId, String password, Sex sex, Boolean frAgree, Long rfidNum){
         this.userName = userName;
         this.userBirth = userBirth;
         this.userPhoneNum = userPhoneNum;
+        this.loginId = loginId;
         this.password = password;
         this.sex = sex;
         this.frAgree = frAgree;
