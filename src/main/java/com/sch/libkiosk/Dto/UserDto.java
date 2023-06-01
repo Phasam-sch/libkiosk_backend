@@ -1,9 +1,12 @@
 package com.sch.libkiosk.Dto;
 
+import com.sch.libkiosk.Entity.Authority;
 import com.sch.libkiosk.Entity.Enums.Sex;
 import com.sch.libkiosk.Entity.User;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class UserDto {
@@ -23,6 +26,10 @@ public class UserDto {
 
     private Long rfidNum;
 
+    private Boolean activated;
+
+    private Set<Authority> authorities;
+
     public User toEntity(){
         return User.builder()
                 .userName(userName)
@@ -33,11 +40,13 @@ public class UserDto {
                 .sex(sex)
                 .frAgree(frAgree)
                 .rfidNum(rfidNum)
+                .activated(activated)
+                .authorities(authorities)
                 .build();
     }
 
     @Builder
-    public UserDto(String userName, String userBirth, String userPhoneNum, String loginId,String password, Sex sex, Boolean frAgree, Long rfidNum){
+    public UserDto(String userName, String userBirth, String userPhoneNum, String loginId, String password, Sex sex, Boolean frAgree, Long rfidNum, Boolean activated, Set<Authority> authorities){
         this.userName = userName;
         this.userBirth = userBirth;
         this.userPhoneNum = userPhoneNum;
@@ -46,5 +55,7 @@ public class UserDto {
         this.sex = sex;
         this.frAgree = frAgree;
         this.rfidNum = rfidNum;
+        this.activated = activated;
+        this.authorities = authorities;
     }
 }

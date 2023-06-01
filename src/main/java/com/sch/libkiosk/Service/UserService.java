@@ -1,17 +1,19 @@
 package com.sch.libkiosk.Service;
 
 import com.sch.libkiosk.Dto.UserDto;
+import com.sch.libkiosk.Entity.Authority;
 import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Repository.UserRepository;
+import com.sch.libkiosk.Security.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -20,32 +22,63 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @Transactional
-    public Long SignUp(UserDto userDto){
-        return userRepository.save(userDto.toEntity()).getId();
-    }
-
-    @Transactional
-    public List<UserDto> getAllUser(){
-        List<User> userList = userRepository.findAll();
-        List<UserDto> userDtoList = new ArrayList<>();
-
-        for(User u : userList){
-            UserDto userDto = UserDto.builder()
-                    .userName(u.getUserName())
-//                    .userBirth(u.getUserBirth())
-//                    .userPhoneNum(u.getUserPhoneNum())
-//                    .password(u.getPassword())
-//                    .sex(u.getSex())
-                    .frAgree(u.getFrAgree())
-                    .build();
-
-            userDtoList.add(userDto);
+    public User signUp(UserDto userDto){
+        if (userRepository.findOneWithAuthoritiesByLoginId(userDto.getLoginId()).orElse(null) != null) {
+            throw new RuntimeException("이미 가입된 사용자");
         }
 
-        return userDtoList;
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
+
+        User user = User.builder()
+                .userName(userDto.getUserName())
+                .loginId(userDto.getLoginId())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .userBirth(userDto.getUserBirth())
+                .userPhoneNum(userDto.getUserPhoneNum())
+                .sex(userDto.getSex())
+                .frAgree(userDto.getFrAgree())
+                .activated(true)
+                .authorities(Collections.singleton(authority))
+                .build();
+
+        return userRepository.save(user);
     }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthorities(String loginId) {
+        return userRepository.findOneWithAuthoritiesByLoginId(loginId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getMyUserWithAuthorities() {
+        return SecurityUtil.getCurrentLoginId()
+                .flatMap(userRepository::findOneWithAuthoritiesByLoginId);
+    }
+
+//    @Transactional
+//    public List<UserDto> getAllUser(){
+//        List<User> userList = userRepository.findAll();
+//        List<UserDto> userDtoList = new ArrayList<>();
+//
+//        for(User u : userList){
+//            UserDto userDto = UserDto.builder()
+//                    .userName(u.getUserName())
+////                    .userBirth(u.getUserBirth())
+////                    .userPhoneNum(u.getUserPhoneNum())
+////                    .password(u.getPassword())
+////                    .sex(u.getSex())
+//                    .fragree(u.getFrAgree())
+//                    .build();
+//
+//            userDtoList.add(userDto);
+//        }
+//
+//        return userDtoList;
+//    }
 
     @Transactional
     public UserDto getUserById(Long uid) throws EntityNotFoundException{

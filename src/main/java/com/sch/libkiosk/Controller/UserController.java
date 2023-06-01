@@ -6,9 +6,11 @@ import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Service.UserPicsService;
 import com.sch.libkiosk.Service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,27 +28,46 @@ public class UserController {
     private final UserService userService;
     private final UserPicsService userPicsService;
 
-    @PostMapping
-    public Long signUp(@RequestBody SignupDto signupDto){
-        Long ret = -1L;
-        UserDto userDto = UserDto.builder()
-                .userName(signupDto.getUserName())
-                .userBirth(signupDto.getUserBirth())
-                .userPhoneNum(signupDto.getUserPhoneNum())
-                .password(signupDto.getPassword())
-                .sex(signupDto.getSex())
-                .frAgree(signupDto.getFrAgree())
-                .build();
+//    @PostMapping
+//    public Long signUp(@RequestBody SignupDto signupDto){
+//        Long ret = -1L;
+//        UserDto userDto = UserDto.builder()
+//                .userName(signupDto.getUserName())
+//                .userBirth(signupDto.getUserBirth())
+//                .userPhoneNum(signupDto.getUserPhoneNum())
+//                .password(signupDto.getPassword())
+//                .sex(signupDto.getSex())
+//                .frAgree(signupDto.getFrAgree())
+//                .build();
+//
+//        try{
+//             ret = userService.SignUp(userDto);
+//
+//        }catch(Exception e){
+//            log.error("Sign up Error ======\n" + signupDto + "\n\n");
+//            ret = -1L;
+//        }
+//
+//        return ret;
+//    }
 
-        try{
-             ret = userService.SignUp(userDto);
+    @PostMapping("/signup")
+    public ResponseEntity<User> signup(
+            @Valid @RequestBody UserDto userDto
+    ){
+        return ResponseEntity.ok(userService.signUp(userDto));
+    }
 
-        }catch(Exception e){
-            log.error("Sign up Error ======\n" + signupDto + "\n\n");
-            ret = -1L;
-        }
+    @GetMapping("/user")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<User> getMyUserInfo(){
+        return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
+    }
 
-        return ret;
+    @GetMapping("/user/{loginId}")
+    @PreAuthorize("hasAnyRole('Admin')")
+    public ResponseEntity<User> getUserInfo(@PathVariable String loginId){
+        return ResponseEntity.ok(userService.getUserWithAuthorities(loginId).get());
     }
 
     @PostMapping("/pics")
@@ -69,11 +90,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<UserDto>> getUserList(){
-        List<UserDto> userDtoList = userService.getAllUser();
-        return ResponseEntity.ok(userDtoList);
-    }
+//    @GetMapping("/getAll")
+//    public ResponseEntity<List<UserDto>> getUserList(){
+//        List<UserDto> userDtoList = userService.getAllUser();
+//        return ResponseEntity.ok(userDtoList);
+//    }
 
     @GetMapping("/get/{id}")
     public UserDto getUserById(@PathVariable("id") Long id){
