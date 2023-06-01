@@ -1,4 +1,4 @@
-package com.sch.libkiosk;
+package com.sch.libkiosk.Config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
