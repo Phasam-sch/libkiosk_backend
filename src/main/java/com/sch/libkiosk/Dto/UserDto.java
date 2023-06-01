@@ -18,6 +18,7 @@ public class UserDto {
     private String userPhoneNum;
 
     private String loginId;
+
     private String password;
 
     private Sex sex;
@@ -47,6 +48,7 @@ public class UserDto {
 
     @Builder
     public UserDto(String userName, String userBirth, String userPhoneNum, String loginId, String password, Sex sex, Boolean frAgree, Long rfidNum, Boolean activated, Set<Authority> authorities){
+
         this.userName = userName;
         this.userBirth = userBirth;
         this.userPhoneNum = userPhoneNum;
