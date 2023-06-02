@@ -2,8 +2,10 @@ package com.sch.libkiosk.Controller;
 
 import com.sch.libkiosk.Dto.LoginDto;
 import com.sch.libkiosk.Dto.TokenDto;
+import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Security.JwtFilter;
 import com.sch.libkiosk.Security.TokenProvider;
+import com.sch.libkiosk.Service.CamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,10 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +27,7 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
+    private final CamService camService;
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto){
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -41,5 +43,17 @@ public class AuthController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+    }
+
+    @PostMapping("/authenticate/fr")
+    public ResponseEntity<TokenDto> FRauthroize(
+            @RequestParam("pics") List<MultipartFile> pics
+    ){
+        try{
+            User user = camService.uploadLoginPic(pics);
+            //토큰 발급 시도
+        }catch(Exception e){
+
+        }
     }
 }

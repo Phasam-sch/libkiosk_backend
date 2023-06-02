@@ -41,8 +41,8 @@ public class UserService {
                 .userPhoneNum(userDto.getUserPhoneNum())
                 .sex(userDto.getSex())
                 .frAgree(userDto.getFrAgree())
-                .activated(true)
                 .authorities(Collections.singleton(authority))
+                .activated(true)
                 .build();
 
         return userRepository.save(user);

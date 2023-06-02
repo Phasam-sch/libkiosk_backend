@@ -28,29 +28,7 @@ public class UserController {
     private final UserService userService;
     private final UserPicsService userPicsService;
 
-//    @PostMapping
-//    public Long signUp(@RequestBody SignupDto signupDto){
-//        Long ret = -1L;
-//        UserDto userDto = UserDto.builder()
-//                .userName(signupDto.getUserName())
-//                .userBirth(signupDto.getUserBirth())
-//                .userPhoneNum(signupDto.getUserPhoneNum())
-//                .password(signupDto.getPassword())
-//                .sex(signupDto.getSex())
-//                .frAgree(signupDto.getFrAgree())
-//                .build();
-//
-//        try{
-//             ret = userService.SignUp(userDto);
-//
-//        }catch(Exception e){
-//            log.error("Sign up Error ======\n" + signupDto + "\n\n");
-//            ret = -1L;
-//        }
-//
-//        return ret;
-//    }
-
+    //회원가입
     @PostMapping("/signup")
     public ResponseEntity<User> signup(
             @Valid @RequestBody UserDto userDto
@@ -58,18 +36,21 @@ public class UserController {
         return ResponseEntity.ok(userService.signUp(userDto));
     }
 
+    //회원권한 요청
     @GetMapping("/user")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<User> getMyUserInfo(){
         return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
     }
 
+    //회원 상세 정보
     @GetMapping("/user/{loginId}")
     @PreAuthorize("hasAnyRole('Admin')")
     public ResponseEntity<User> getUserInfo(@PathVariable String loginId){
         return ResponseEntity.ok(userService.getUserWithAuthorities(loginId).get());
     }
 
+    //회원 사진 저장
     @PostMapping("/pics")
     public ResponseEntity<?> postUserPics(
             @RequestParam("uid") Long uid,
@@ -96,37 +77,36 @@ public class UserController {
 //        return ResponseEntity.ok(userDtoList);
 //    }
 
-    @GetMapping("/get/{id}")
-    public UserDto getUserById(@PathVariable("id") Long id){
-        return userService.getUserById(id);
-    }
+//    @GetMapping("/get/{id}")
+//    public UserDto getUserById(@PathVariable("id") Long id){
+//        return userService.getUserById(id);
+//    }
 
     //PUT은 요청된 객체로 통쨰로 수정(교체)
     //PATCH는 일부 데이터만 수정
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto){
-        try {
-            userService.updateUser(userDto, id);
-        }catch(EntityNotFoundException e){
-            log.error("User not Exist");
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+//        try {
+//            userService.updateUser(userDto, id);
+//        }catch(EntityNotFoundException e){
+//            log.error("User not Exist");
+//            return ResponseEntity.badRequest().build();
+//        }
+//        return ResponseEntity.ok().build();
+//    }
     
     
-    @PatchMapping("/card/{id}")
-    public ResponseEntity<?> updateUserCard(@PathVariable("id") Long id, @RequestBody UserDto userDto){
-        try{
-            userService.updateUserCard(userDto, id);
-        }catch(EntityNotFoundException e){
-            log.error("User not Exist");
-            return  ResponseEntity.internalServerError().build();
-        }
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("/card/{id}")
+//    public ResponseEntity<?> updateUserCard(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+//        try{
+//            userService.updateUserCard(userDto, id);
+//        }catch(EntityNotFoundException e){
+//            log.error("User not Exist");
+//            return  ResponseEntity.internalServerError().build();
+//        }
+//        return ResponseEntity.ok().build();
+//    }
 
-    //로그인
     //안면인식 관련
     //사진 업데이트
 

@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/authenticate").permitAll()
                 .requestMatchers("/users/signup").permitAll()
-                .requestMatchers("/favicon.ico").permitAll()
+                .requestMatchers("/users/pics").permitAll()
+                .requestMatchers("/websocket").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
