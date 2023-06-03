@@ -40,10 +40,14 @@ public class CamService {
             log.error("EmptyFile");
             throw new IllegalStateException("File is Empty");
         }else {
+            //파일이 비어있지 않을 경우
             String f_path = userPicsDir + "/temp";
 
+//            Boolean isExist = null;
+
             try{
-                if(new File(f_path).exists()){
+//                isExist = new File(f_path).exists();
+                if(!new File(f_path).exists()){
                     File directory = new File(f_path);
 
                     if(!directory.mkdirs()){
