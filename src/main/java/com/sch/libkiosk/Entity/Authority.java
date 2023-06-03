@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class Authority {
 
     @Id
+//    private Long id;
     @Column(name ="authorityName", length = 50)
     private String authorityName;
 
