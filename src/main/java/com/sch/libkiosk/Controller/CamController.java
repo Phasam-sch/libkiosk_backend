@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cam")
+@RequestMapping("/api/cam")
 public class CamController {
 
     private MyMessageSender myMessageSender;
@@ -29,5 +29,7 @@ public class CamController {
             myMessageSender.sendMessageToClient(msg);
         }
     }
+
+
 
 }
