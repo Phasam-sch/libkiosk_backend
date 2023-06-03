@@ -47,8 +47,10 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/authenticate").permitAll()
-                .requestMatchers("/users/signup").permitAll()
-                .requestMatchers("/users/pics").permitAll()
+                .requestMatchers("/api/authenticate/fr").permitAll()
+                .requestMatchers("/api/users/signup").permitAll()
+                .requestMatchers("/api/users/user").permitAll()
+                .requestMatchers("/api/users/pics").permitAll()
                 .requestMatchers("/websocket").permitAll()
                 .anyRequest().authenticated()
 
