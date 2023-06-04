@@ -1,5 +1,6 @@
 package com.sch.libkiosk.Service;
 
+import com.sch.libkiosk.Dto.LoginDto;
 import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Repository.UserPicsRepository;
 import com.sch.libkiosk.Repository.UserRepository;
@@ -34,7 +35,7 @@ public class CamService {
     private String userPicsDir;
 
     @Transactional
-    public User uploadLoginPic(List<MultipartFile> loginPics) throws IOException{
+    public LoginDto uploadLoginPic(List<MultipartFile> loginPics) throws IOException{
 
         if(loginPics.isEmpty()){
             //파일이 비어있는 경우
@@ -93,13 +94,18 @@ public class CamService {
 
                 //사용자 판별할 수 없을 경우 로그인 종료
 
-                if(!(LoginUser == -1L)) {
+                if(LoginUser != -1L) {
                     Optional<User> optionalUser = userRepository.findById(LoginUser);
                     if (optionalUser.isPresent()) {
-                        return optionalUser.get();
+                        User retUser = optionalUser.get();
+                        log.info("[안면인식] 사용자 ID: " + retUser.getLoginId() + "  사용자 PW : " + retUser.getPassword());
 
+                    return LoginDto.builder()
+                                .loginId(retUser.getLoginId())
+                                .password(retUser.getPassword())
+                                .build();
                     } else {
-                        throw new IllegalStateException("로그인 실패");
+                        throw new IllegalStateException("로그인 실패 1");
                     }
                 }
 
@@ -107,7 +113,7 @@ public class CamService {
                 log.error("dir not found" + f_path);
             }
         }
-        throw new IllegalStateException("로그인 실패");
+        throw new IllegalStateException("로그인 실패 2");
     }
 
 //    private static Set<Session> clients =

@@ -51,28 +51,24 @@ public class AuthController {
             @RequestParam("pics") List<MultipartFile> pics
     ){
         try{
-            User user = camService.uploadLoginPic(pics);
+            LoginDto loginDto =  camService.uploadLoginPic(pics);
+            log.debug("[컨] id: "+ loginDto.getLoginId() + "pw: " + loginDto.getPassword());
             //토큰 발급 시도
-//            LoginDto loginDto = LoginDto.builder()
-//                    .loginId(user.getLoginId())
-//                    .password(user.getPassword())
-//                    .build();
+            return authorize(loginDto);
+
+//            UsernamePasswordAuthenticationToken authenticationToken =
+//                    new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
 //
-//            return authorize(loginDto);
-
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user.getLoginId(), user.getPassword());
-
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String jwt = tokenProvider.createToken(authentication);
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-
-            return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+//            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            String jwt = tokenProvider.createToken(authentication);
+//
+//            HttpHeaders httpHeaders = new HttpHeaders();
+//            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+//
+//            return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
 
         }catch(Exception e){
             log.error("존재하지 않는 사용자입니다.");
