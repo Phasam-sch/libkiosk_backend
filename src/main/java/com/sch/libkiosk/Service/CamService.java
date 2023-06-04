@@ -83,24 +83,24 @@ public class CamService {
                     }catch(IOException e){
                         throw new IOException("Fail to save local storage");
                     }
+                }
 
-                    //TODO: docker 내 UBUNTU 서버 실행 구현
-                    log.info("ubuntu 실행");
-                    Long LoginUser = -1L;
+                //TODO: docker 내 UBUNTU 서버 실행 구현
+                log.info("ubuntu 실행");
+                Long LoginUser = -1L;
 
-                    LoginUser = 1L;
+                LoginUser = 1L;
 
-                    //사용자 판별할 수 없을 경우 로그인 종료
-                    if(LoginUser.equals(-1L)){
+                //사용자 판별할 수 없을 경우 로그인 종료
+
+                if(!(LoginUser == -1L)) {
+                    Optional<User> optionalUser = userRepository.findById(LoginUser);
+                    if (optionalUser.isPresent()) {
+                        return optionalUser.get();
+
+                    } else {
                         throw new IllegalStateException("로그인 실패");
-                    }else{
-                        Optional<User> optionalUser = userRepository.findById(LoginUser);
-                        if(optionalUser.isPresent()){
-                            return optionalUser.get();
-                        }
                     }
-
-
                 }
 
             }catch(FileNotFoundException e){
