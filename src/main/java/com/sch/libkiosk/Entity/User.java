@@ -55,7 +55,7 @@ public class User {
     @JoinTable(
             name = "userAuthority",
             joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "authorityName", referencedColumnName = "authorityName")})
+            inverseJoinColumns = {@JoinColumn(name = "roleid", referencedColumnName = "id")})
     private Set<Authority> authorities;
 
     public void updateUser(String userPhoneNum, String loginId, String password, Boolean frAgree){

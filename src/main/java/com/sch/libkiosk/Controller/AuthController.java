@@ -62,6 +62,7 @@ public class AuthController {
 
         }catch(Exception e){
             log.error("존재하지 않는 사용자입니다.");
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

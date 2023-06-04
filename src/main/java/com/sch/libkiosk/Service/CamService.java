@@ -37,10 +37,12 @@ public class CamService {
     public User uploadLoginPic(List<MultipartFile> loginPics) throws IOException{
 
         if(loginPics.isEmpty()){
+            //파일이 비어있는 경우
             log.error("EmptyFile");
             throw new IllegalStateException("File is Empty");
         }else {
             //파일이 비어있지 않을 경우
+            //로그인 사진 저장 경로
             String f_path = userPicsDir + "/temp";
 
 //            Boolean isExist = null;
@@ -48,6 +50,7 @@ public class CamService {
             try{
 //                isExist = new File(f_path).exists();
                 if(!new File(f_path).exists()){
+                    //경로가 존재하지 않을 경우 경로 생성
                     File directory = new File(f_path);
 
                     if(!directory.mkdirs()){
@@ -56,6 +59,7 @@ public class CamService {
 
                 }
 
+                //경로 확인 후 사진 저장
                 for(MultipartFile pic : loginPics){
                     String contentType = pic.getContentType();
                     String originalFileExtension;

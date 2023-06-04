@@ -1,8 +1,6 @@
 package com.sch.libkiosk.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +14,9 @@ import lombok.NoArgsConstructor;
 public class Authority {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
 //    private Long id;
     @Column(name ="authorityName", length = 50)
     private String authorityName;
