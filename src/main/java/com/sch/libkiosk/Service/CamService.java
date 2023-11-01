@@ -4,6 +4,16 @@ import com.sch.libkiosk.Dto.LoginDto;
 import com.sch.libkiosk.Entity.User;
 import com.sch.libkiosk.Repository.UserPicsRepository;
 import com.sch.libkiosk.Repository.UserRepository;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
@@ -20,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.*;
 
 @Slf4j
@@ -114,6 +125,35 @@ public class CamService {
             }
         }
         throw new IllegalStateException("로그인 실패 2");
+    }
+
+    public void sendMessage() throws Exception  {
+        String host = "192.0.0.1";
+        int port = 8080;
+
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
+                    .remoteAddress(new InetSocketAddress(host, port))
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            // 여기에 소켓 통신 설정을 추가합니다.
+                            ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8)); // String encoder
+                            ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8)); // 문자열 디코더
+                        }
+                    });
+            ChannelFuture future = bootstrap.connect().sync();
+
+            // 메시지 전송 로직을 추가
+            future.channel().writeAndFlush("test");
+
+            future.channel().closeFuture().sync();
+        } finally {
+            group.shutdownGracefully().sync();
+        }
     }
 
 //    private static Set<Session> clients =

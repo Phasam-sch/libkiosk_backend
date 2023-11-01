@@ -39,6 +39,9 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version:'0.11.5'
 //socket
 	implementation "org.springframework.boot:spring-boot-starter-websocket:2.6.2"
+
+	//netty
+	implementation 'io.netty:netty-all:4.1.68.Final' // Netty 의존성 추가
 }
 
 tasks.named('test') {
